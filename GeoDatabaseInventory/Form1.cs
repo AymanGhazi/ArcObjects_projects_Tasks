@@ -12,6 +12,8 @@ using ESRI.ArcGIS.DataSourcesGDB;
 using ESRI.ArcGIS.Geodatabase;
 using System.IO;
 using ESRI.ArcGIS.esriSystem;
+using Microsoft.Office.Interop.Excel;
+using System.Diagnostics;
 
 namespace GeoDatabaseInventory
 {
@@ -55,18 +57,27 @@ namespace GeoDatabaseInventory
 
                 if (rdbFile.Checked == true)
                 {
+                    lblProgress.Text = "File Geodatabase Selected ";
+                    System.Windows.Forms.Application.DoEvents();
+
                     Pwsf = new FileGDBWorkspaceFactoryClass();
                     FileExists = txtGeoDatabasePath.Text.EndsWith(".gdb");
 
                 }
                 if (rdbPersonal.Checked == true)
                 {
+                    lblProgress.Text = "Personal Geodatabase Selected ";
+                    System.Windows.Forms.Application.DoEvents();
+
                     Pwsf = new AccessWorkspaceFactoryClass(); //mdb file access
                     FileExists = txtGeoDatabasePath.Text.EndsWith(".mdb");
 
                 }
                 if (rdbSHP.Checked == true)
                 {
+                    lblProgress.Text = "Shape File Selected ";
+                    System.Windows.Forms.Application.DoEvents();
+
                     Pwsf = new ShapefileWorkspaceFactoryClass();
                     FileExists = Path.HasExtension(txtGeoDatabasePath.Text + "/:.shp");
 
@@ -80,6 +91,9 @@ namespace GeoDatabaseInventory
                         var WorkspaceType = Pwsf.WorkspaceType.ToString();
                         if (isWorkSpace)
                         {
+                            lblProgress.Text = "File Geodatabase is Found ";
+                            System.Windows.Forms.Application.DoEvents();
+
                             Pws = Pwsf.OpenFromFile(txtGeoDatabasePath.Text, 0);
 
                             //Getting feature classes outside the feature DataSet
@@ -87,6 +101,8 @@ namespace GeoDatabaseInventory
                             IEnumDataset PEnumDS = Pws.get_Datasets(esriDatasetType.esriDTFeatureClass);
                             IDataset pDs = PEnumDS.Next();
                             int Index = 0;
+                            lblProgress.Text = "Fetching Feature Classes .... ";
+                            System.Windows.Forms.Application.DoEvents();
                             while (pDs != null)
                             {
                                 IFeatureClass FC = (IFeatureClass)pDs;
@@ -132,6 +148,8 @@ namespace GeoDatabaseInventory
 
                                 pDs = PEnumDS.Next();
                             }
+                            lblProgress.Text = "Feature classes Found ";
+                            System.Windows.Forms.Application.DoEvents();
 
                             cmbFC.SelectedIndex = 0;
 
@@ -142,6 +160,9 @@ namespace GeoDatabaseInventory
 
                     catch (Exception ex)
                     {
+                        lblProgress.Text = "Error ";
+                        System.Windows.Forms.Application.DoEvents();
+
                         MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
@@ -155,16 +176,20 @@ namespace GeoDatabaseInventory
 
         private void btnFile_Click(object sender, EventArgs e)
         {
+           
+
             FolderBrowserDialog dialog = new FolderBrowserDialog();
 
             if (dialog.ShowDialog() ==DialogResult.OK)
             {
                 if (!string.IsNullOrEmpty(dialog.SelectedPath))
                 {
+
                     txtGeoDatabasePath.Text = dialog.SelectedPath;
                 }
             }
         }
+       
         private void cmbFC_SelectedIndexChanged(object sender, EventArgs e)
         {
             IFeatureClass item = FCList.FirstOrDefault(x=>x.AliasName == cmbFC.SelectedItem.ToString());
@@ -173,7 +198,7 @@ namespace GeoDatabaseInventory
             QF.WhereClause = "1=1";
             lblCount.Text = item.FeatureCount(QF).ToString();
         }
-
+      
         private void FCList_DrawItem(object sender,DrawItemEventArgs e)
         {
             // Draw the background of the ListBox control for each item.
@@ -203,5 +228,72 @@ namespace GeoDatabaseInventory
             // If the ListBox has focus, draw a focus rectangle around the selected item.
             e.DrawFocusRectangle();
         }
+
+        private void btnGenerateReport_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                if (!string.IsNullOrEmpty(dialog.SelectedPath))
+                {
+                    lblProgress.Text = "Generating Report .... ";
+                    System.Windows.Forms.Application.DoEvents();
+
+                    dialog.SelectedPath = dialog.SelectedPath;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(dialog.SelectedPath))
+            {
+                _Application App = new Microsoft.Office.Interop.Excel.Application();
+              
+                object misValue = System.Reflection.Missing.Value;
+                Workbook WB = App.Workbooks.Add(XlWBATemplate.xlWBATWorksheet);
+                Worksheet WS = WB.Worksheets[1];
+                Range CellRange = WS.Range["A1:C1"];
+                CellRange.set_Value(XlRangeValueDataType.xlRangeValueDefault, new[] { "Feature Class Name", "Feature Class Alias Name", "Features Count" });
+
+                var DatabaseName = Path.GetFileNameWithoutExtension(txtGeoDatabasePath.Text);
+
+                dialog.SelectedPath = dialog.SelectedPath + "\\" + DatabaseName + "_Geo_report.xlsx";
+             
+                int row = 2;
+               
+                foreach (IFeatureClass item   in FCList)
+                {
+                    
+                    int numberOfFClasses = item.FeatureCount(null);
+                    IDataset TempDs = (IDataset)item;
+
+                    int column = 1;
+                    ((Microsoft.Office.Interop.Excel.Range)WS.Cells[row, column]).Value = TempDs.Name;
+                    column += 1;
+                    ((Microsoft.Office.Interop.Excel.Range)WS.Cells[row, column]).Value = item.AliasName;
+                    column += 1;
+                    ((Microsoft.Office.Interop.Excel.Range)WS.Cells[row, column]).Value = numberOfFClasses.ToString();
+
+                    //foreach (DataColumn column in thisTable.Columns)
+                    //{
+                    //    Console.WriteLine(row[column]);
+                    //}
+                    row += 1;
+
+                }
+                WB.SaveAs(dialog.SelectedPath);
+                WB.Close();
+                lblProgress.Text = "Report Created on "+ dialog.SelectedPath;
+                System.Windows.Forms.Application.DoEvents();
+
+                MessageBox.Show("Report Generated SuccessFully");
+                if (File.Exists(dialog.SelectedPath))
+                {
+                    Process.Start(dialog.SelectedPath);
+                }
+            }
+            
+        }
+
+       
     }
 }

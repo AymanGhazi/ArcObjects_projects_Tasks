@@ -28,6 +28,7 @@ namespace GeoDatabaseInventory
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Inventory));
             this.txtTitle = new System.Windows.Forms.Label();
             this.GeoType = new System.Windows.Forms.Label();
             this.PathLabel = new System.Windows.Forms.Label();
@@ -41,6 +42,8 @@ namespace GeoDatabaseInventory
             this.label1 = new System.Windows.Forms.Label();
             this.lblCount = new System.Windows.Forms.Label();
             this.btnFile = new System.Windows.Forms.Button();
+            this.btnGenerateReport = new System.Windows.Forms.Button();
+            this.lblProgress = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // txtTitle
@@ -117,7 +120,7 @@ namespace GeoDatabaseInventory
             // 
             // btnFCLoad
             // 
-            this.btnFCLoad.Location = new System.Drawing.Point(429, 176);
+            this.btnFCLoad.Location = new System.Drawing.Point(445, 173);
             this.btnFCLoad.Name = "btnFCLoad";
             this.btnFCLoad.Size = new System.Drawing.Size(128, 24);
             this.btnFCLoad.TabIndex = 12;
@@ -176,12 +179,36 @@ namespace GeoDatabaseInventory
             this.btnFile.UseVisualStyleBackColor = true;
             this.btnFile.Click += new System.EventHandler(this.btnFile_Click);
             // 
+            // btnGenerateReport
+            // 
+            this.btnGenerateReport.Location = new System.Drawing.Point(445, 219);
+            this.btnGenerateReport.Name = "btnGenerateReport";
+            this.btnGenerateReport.Size = new System.Drawing.Size(112, 23);
+            this.btnGenerateReport.TabIndex = 20;
+            this.btnGenerateReport.Text = "Generate Report";
+            this.btnGenerateReport.UseVisualStyleBackColor = true;
+            this.btnGenerateReport.Click += new System.EventHandler(this.btnGenerateReport_Click);
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.lblProgress.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lblProgress.Font = new System.Drawing.Font("Century Schoolbook", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblProgress.ForeColor = System.Drawing.SystemColors.MenuText;
+            this.lblProgress.Location = new System.Drawing.Point(5, 264);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblProgress.Size = new System.Drawing.Size(599, 16);
+            this.lblProgress.TabIndex = 21;
+            // 
             // Inventory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Linen;
-            this.ClientSize = new System.Drawing.Size(564, 256);
+            this.ClientSize = new System.Drawing.Size(608, 281);
+            this.Controls.Add(this.lblProgress);
+            this.Controls.Add(this.btnGenerateReport);
             this.Controls.Add(this.btnFile);
             this.Controls.Add(this.lblCount);
             this.Controls.Add(this.label1);
@@ -195,6 +222,7 @@ namespace GeoDatabaseInventory
             this.Controls.Add(this.PathLabel);
             this.Controls.Add(this.GeoType);
             this.Controls.Add(this.txtTitle);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Inventory";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Geo-Summary";
@@ -218,6 +246,8 @@ namespace GeoDatabaseInventory
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblCount;
         private System.Windows.Forms.Button btnFile;
+        private System.Windows.Forms.Button btnGenerateReport;
+        private System.Windows.Forms.TextBox lblProgress;
     }
 }
 
