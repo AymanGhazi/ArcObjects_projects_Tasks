@@ -1,6 +1,6 @@
 namespace GeoDatabaseInventory
 {
-    partial class Inventory
+    partial class InventoryMain
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@ namespace GeoDatabaseInventory
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Inventory));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InventoryMain));
             this.txtTitle = new System.Windows.Forms.Label();
             this.GeoType = new System.Windows.Forms.Label();
             this.PathLabel = new System.Windows.Forms.Label();
@@ -39,11 +39,14 @@ namespace GeoDatabaseInventory
             this.btnFCLoad = new System.Windows.Forms.Button();
             this.cmbFC = new System.Windows.Forms.ComboBox();
             this.txtFC = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.lblCount = new System.Windows.Forms.Label();
             this.btnFile = new System.Windows.Forms.Button();
             this.btnGenerateReport = new System.Windows.Forms.Button();
             this.lblProgress = new System.Windows.Forms.TextBox();
+            this.CHLBOX = new System.Windows.Forms.CheckedListBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.btnExit = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtTitle
@@ -104,7 +107,7 @@ namespace GeoDatabaseInventory
             // 
             this.txtGeoDatabasePath.Location = new System.Drawing.Point(222, 125);
             this.txtGeoDatabasePath.Name = "txtGeoDatabasePath";
-            this.txtGeoDatabasePath.Size = new System.Drawing.Size(201, 20);
+            this.txtGeoDatabasePath.Size = new System.Drawing.Size(237, 20);
             this.txtGeoDatabasePath.TabIndex = 6;
             // 
             // rdbSHP
@@ -133,7 +136,7 @@ namespace GeoDatabaseInventory
             this.cmbFC.FormattingEnabled = true;
             this.cmbFC.Location = new System.Drawing.Point(222, 176);
             this.cmbFC.Name = "cmbFC";
-            this.cmbFC.Size = new System.Drawing.Size(201, 21);
+            this.cmbFC.Size = new System.Drawing.Size(217, 21);
             this.cmbFC.TabIndex = 13;
             this.cmbFC.SelectedIndexChanged += new System.EventHandler(this.cmbFC_SelectedIndexChanged);
             // 
@@ -147,21 +150,11 @@ namespace GeoDatabaseInventory
             this.txtFC.TabIndex = 14;
             this.txtFC.Text = "Select Feature Class";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(12, 222);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(124, 20);
-            this.label1.TabIndex = 15;
-            this.label1.Text = " Features Count";
-            // 
             // lblCount
             // 
             this.lblCount.AutoSize = true;
             this.lblCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCount.Location = new System.Drawing.Point(218, 222);
+            this.lblCount.Location = new System.Drawing.Point(504, 217);
             this.lblCount.Name = "lblCount";
             this.lblCount.Size = new System.Drawing.Size(19, 20);
             this.lblCount.TabIndex = 16;
@@ -171,9 +164,9 @@ namespace GeoDatabaseInventory
             // 
             this.btnFile.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnFile.ForeColor = System.Drawing.Color.Black;
-            this.btnFile.Location = new System.Drawing.Point(445, 125);
+            this.btnFile.Location = new System.Drawing.Point(467, 125);
             this.btnFile.Name = "btnFile";
-            this.btnFile.Size = new System.Drawing.Size(97, 23);
+            this.btnFile.Size = new System.Drawing.Size(106, 23);
             this.btnFile.TabIndex = 17;
             this.btnFile.Text = "Browse";
             this.btnFile.UseVisualStyleBackColor = true;
@@ -181,9 +174,9 @@ namespace GeoDatabaseInventory
             // 
             // btnGenerateReport
             // 
-            this.btnGenerateReport.Location = new System.Drawing.Point(445, 219);
+            this.btnGenerateReport.Location = new System.Drawing.Point(222, 350);
             this.btnGenerateReport.Name = "btnGenerateReport";
-            this.btnGenerateReport.Size = new System.Drawing.Size(112, 23);
+            this.btnGenerateReport.Size = new System.Drawing.Size(102, 23);
             this.btnGenerateReport.TabIndex = 20;
             this.btnGenerateReport.Text = "Generate Report";
             this.btnGenerateReport.UseVisualStyleBackColor = true;
@@ -195,23 +188,66 @@ namespace GeoDatabaseInventory
             this.lblProgress.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblProgress.Font = new System.Drawing.Font("Century Schoolbook", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProgress.ForeColor = System.Drawing.SystemColors.MenuText;
-            this.lblProgress.Location = new System.Drawing.Point(5, 264);
+            this.lblProgress.Location = new System.Drawing.Point(0, 389);
             this.lblProgress.Name = "lblProgress";
             this.lblProgress.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblProgress.Size = new System.Drawing.Size(599, 16);
+            this.lblProgress.Size = new System.Drawing.Size(584, 16);
             this.lblProgress.TabIndex = 21;
             // 
-            // Inventory
+            // CHLBOX
+            // 
+            this.CHLBOX.FormattingEnabled = true;
+            this.CHLBOX.Location = new System.Drawing.Point(222, 217);
+            this.CHLBOX.Name = "CHLBOX";
+            this.CHLBOX.Size = new System.Drawing.Size(237, 109);
+            this.CHLBOX.TabIndex = 22;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(12, 217);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(100, 20);
+            this.label2.TabIndex = 23;
+            this.label2.Text = "Select Fields";
+            // 
+            // btnExit
+            // 
+            this.btnExit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnExit.Location = new System.Drawing.Point(363, 350);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(96, 23);
+            this.btnExit.TabIndex = 24;
+            this.btnExit.Text = "Exit";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(480, 247);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(81, 20);
+            this.label1.TabIndex = 25;
+            this.label1.Text = "Features";
+            // 
+            // InventoryMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Linen;
-            this.ClientSize = new System.Drawing.Size(608, 281);
+            this.CancelButton = this.btnExit;
+            this.ClientSize = new System.Drawing.Size(583, 405);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.btnExit);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.CHLBOX);
             this.Controls.Add(this.lblProgress);
             this.Controls.Add(this.btnGenerateReport);
             this.Controls.Add(this.btnFile);
             this.Controls.Add(this.lblCount);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.txtFC);
             this.Controls.Add(this.cmbFC);
             this.Controls.Add(this.btnFCLoad);
@@ -223,7 +259,7 @@ namespace GeoDatabaseInventory
             this.Controls.Add(this.GeoType);
             this.Controls.Add(this.txtTitle);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Inventory";
+            this.Name = "InventoryMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Geo-Summary";
             this.ResumeLayout(false);
@@ -243,11 +279,14 @@ namespace GeoDatabaseInventory
         private System.Windows.Forms.Button btnFCLoad;
         private System.Windows.Forms.ComboBox cmbFC;
         private System.Windows.Forms.Label txtFC;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblCount;
         private System.Windows.Forms.Button btnFile;
         private System.Windows.Forms.Button btnGenerateReport;
         private System.Windows.Forms.TextBox lblProgress;
+        private System.Windows.Forms.CheckedListBox CHLBOX;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnExit;
+        private System.Windows.Forms.Label label1;
     }
 }
 

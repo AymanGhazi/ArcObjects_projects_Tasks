@@ -16,14 +16,14 @@ using Microsoft.Office.Interop.Excel;
 using System.Diagnostics;
 using ESRI.ArcGIS.CatalogUI;
 using ESRI.ArcGIS.Catalog;
+using static System.Windows.Forms.CheckedListBox;
+using GeoDatabaseInventory;
 
 namespace GeoDatabaseInventory
 {
-    public partial class Inventory : Form
+    public partial class InventoryMain : Form
     {
-
-
-        public Inventory()
+        public InventoryMain()
         {
             InitializeComponent();
         }
@@ -31,8 +31,13 @@ namespace GeoDatabaseInventory
         public string SelectedDSName { get; set; }
         IList<IFeatureClass> FCList = new List<IFeatureClass>();
 
+        List<FieldsList> Fieldslist = new List<FieldsList>();
+
         IWorkspaceFactory Pwsf = null;
         IWorkspace Pws = null;
+
+        public string lastSelected { get; set; }
+
 
         private void btnFCPath_Click(object sender, EventArgs e)
         {
@@ -42,12 +47,10 @@ namespace GeoDatabaseInventory
                
             } 
         }
-
         private void btnFCLoad_Click(object sender, EventArgs e)
         {
             SelectedDSName = cmbFC.SelectedText;
             cmbFC.Items.Clear();
-
             if (string.IsNullOrEmpty(txtGeoDatabasePath.Text))
             {
                 MessageBox.Show("GDB path can not be empty ", "error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -66,7 +69,6 @@ namespace GeoDatabaseInventory
                 if (rdbPersonal.Checked == true)
                 {
                     Pwsf = new AccessWorkspaceFactoryClass(); //mdb file access
-
                     FileExists = txtGeoDatabasePath.Text.EndsWith(".mdb");
                 }
                 if (rdbSHP.Checked == true)
@@ -75,7 +77,6 @@ namespace GeoDatabaseInventory
                     FileExists = Path.HasExtension(txtGeoDatabasePath.Text + "/:.shp");
 
                 }
-
                 if ((Directory.Exists(txtGeoDatabasePath.Text) || File.Exists(txtGeoDatabasePath.Text))&& FileExists)
                 {
                     try
@@ -109,7 +110,6 @@ namespace GeoDatabaseInventory
                                 }
                                 pDs = PEnumDS.Next();
                             }
-                     
                             #endregion
 
                             #region Feature Datasets
@@ -137,20 +137,14 @@ namespace GeoDatabaseInventory
                                             pds1Inside = pDSInsideEnum.Next();
                                         }
                                     }
-
                                     pDs = PEnumDS.Next();
                                 }
                             }
-                          
                             lblProgress.Text = "Feature classes Found ";
                             System.Windows.Forms.Application.DoEvents();
-
                             cmbFC.SelectedIndex = 0;
-
-                            #endregion
-
+                        #endregion
                     }
-
                     catch (Exception ex)
                     {
                         lblProgress.Text = "Error ";
@@ -196,29 +190,60 @@ namespace GeoDatabaseInventory
             if (GxDialog.DoModalOpen(0,out GxObjectEnum)==true)
             {
               IGxObject selection = GxObjectEnum.Next();
-              txtGeoDatabasePath.Text = selection.FullName;
+              txtGeoDatabasePath.Text = selection.FullName;         
             }
-            //FolderBrowserDialog dialog = new FolderBrowserDialog();
-
-            //if (dialog.ShowDialog() ==DialogResult.OK)
-            //{
-            //    if (!string.IsNullOrEmpty(dialog.SelectedPath))
-            //    {
-
-            //        txtGeoDatabasePath.Text = dialog.SelectedPath;
-            //    }
-            //}
         }
-       
+       /// <summary>
+       /// filter Data on the feature class to get the number of features
+       /// </summary>
+       /// <param name="sender"></param>
+       /// <param name="e"></param>
         private void cmbFC_SelectedIndexChanged(object sender, EventArgs e)
         {
-            IFeatureClass item = FCList.FirstOrDefault(x=>x.AliasName == cmbFC.SelectedItem.ToString());
+            IFeatureClass featureSelected = FCList.FirstOrDefault(x=>x.AliasName == cmbFC.SelectedItem.ToString());
             IQueryFilter QF = new QueryFilter();
             QF.SubFields = "*";
             QF.WhereClause = "1=1";
-            lblCount.Text = item.FeatureCount(QF).ToString();
+            lblCount.Text = featureSelected.FeatureCount(QF).ToString();
+
+            //Checkbox Data selection
+            IFeatureClass selectedFeature = FCList.FirstOrDefault(x => x.AliasName == lastSelected);
+            if (selectedFeature != null)
+            {
+                FieldsList list = new FieldsList
+                {
+                    FeatureClassID = selectedFeature,
+                    fieldsSelected= new List<IField>()
+            };
+                foreach (var checkItem in CHLBOX.CheckedItems)
+                {
+                    IFields Fields = selectedFeature.Fields;
+                    for (int i = 0; i < Fields.FieldCount; i++)
+                    {
+                        if (Fields.Field[i].AliasName == checkItem.ToString())
+                        {
+                            list.fieldsSelected.Add(Fields.Field[i]);
+                        }
+                    }
+                }
+                Fieldslist.Add(list);
+            }
+           
+            //adding to ComboBox selection for Fields of the newly selected Feature Class
+            CHLBOX.Items.Clear();
+            IFields F = featureSelected.Fields;
+            for (int i = 0; i < F.FieldCount; i++)
+            {
+                CHLBOX.Items.Add(F.Field[i].AliasName);
+            }
+
+            lastSelected = cmbFC.SelectedItem.ToString();
         }
-      
+        /// <summary>
+        /// event handler to add an image infront of the selections 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FCList_DrawItem(object sender,DrawItemEventArgs e)
         {
             // Draw the background of the ListBox control for each item.
@@ -248,15 +273,21 @@ namespace GeoDatabaseInventory
             // If the ListBox has focus, draw a focus rectangle around the selected item.
             e.DrawFocusRectangle();
         }
-
+        /// <summary>
+        /// Generating the report
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnGenerateReport_Click(object sender, EventArgs e)
         {
+            //open the dialog to select the location to save on
             FolderBrowserDialog dialog = new FolderBrowserDialog();
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 if (!string.IsNullOrEmpty(dialog.SelectedPath))
                 {
+                    //ToolTip bar and refresh the screen
                     lblProgress.Text = "Generating Report .... ";
                     System.Windows.Forms.Application.DoEvents();
 
@@ -266,20 +297,22 @@ namespace GeoDatabaseInventory
 
             if (!string.IsNullOrEmpty(dialog.SelectedPath))
             {
-                _Application App = new Microsoft.Office.Interop.Excel.Application();
-              
-                object misValue = System.Reflection.Missing.Value;
+                // App ==> WorkBook ==> WorkSheet
+                _Application App = new Microsoft.Office.Interop.Excel.Application();  
+                //Giving it a template to make the new file
                 Workbook WB = App.Workbooks.Add(XlWBATemplate.xlWBATWorksheet);
+                //generating the first worksheet ==> the feature classes and the number of each feature included
                 Worksheet WS = WB.Worksheets[1];
+                //heading 
                 Range CellRange = WS.Range["A1:C1"];
                 CellRange.set_Value(XlRangeValueDataType.xlRangeValueDefault, new[] { "Feature Class Name", "Feature Class Alias Name", "Features Count" });
-
+                CellRange.Font.Bold = true;
                 var DatabaseName = Path.GetFileNameWithoutExtension(txtGeoDatabasePath.Text);
 
                 dialog.SelectedPath = dialog.SelectedPath + "\\" + DatabaseName + "_Geo_report.xlsx";
-             
+                // 2 as we make the first row for heading 
                 int row = 2;
-               
+                // Writing Data on excel
                 foreach (IFeatureClass item   in FCList)
                 {
                     
@@ -300,12 +333,25 @@ namespace GeoDatabaseInventory
                     row += 1;
 
                 }
+                
+                //generating the second worksheet ==> attribute(spatial & Non-Spatial) table for every feature class
+                for (int i = 0; i < FCList.Count; i++)
+                {
+                    //loop through sheets of the feature classes ==> 1 is the first worksheet we begin from 2 
+                    Worksheet WSs = WB.Worksheets[i+1];
+
+                }
+                //save file
                 WB.SaveAs(dialog.SelectedPath);
+                //close the edit mode
                 WB.Close();
+                //toolTip bar
                 lblProgress.Text = "Report Created on "+ dialog.SelectedPath;
+                //refresh the screen
                 System.Windows.Forms.Application.DoEvents();
 
                 MessageBox.Show("Report Generated SuccessFully");
+                //open the file after save 
                 if (File.Exists(dialog.SelectedPath))
                 {
                     Process.Start(dialog.SelectedPath);
@@ -314,6 +360,10 @@ namespace GeoDatabaseInventory
             
         }
 
-       
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
     }
 }

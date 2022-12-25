@@ -28,7 +28,7 @@ namespace GeoDatabaseInventory
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Inventory());
+            Application.Run(new InventoryMain());
             //ESRI License Initializer generated code.
             //Do not make any call to ArcObjects after ShutDownApplication()
             m_AOLicenseInitializer.ShutdownApplication();

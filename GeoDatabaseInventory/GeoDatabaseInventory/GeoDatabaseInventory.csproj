@@ -230,6 +230,12 @@
     <Compile Include="LicenseInitializer.Designer.cs">
       <DependentUpon>LicenseInitializer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Select Fields.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Select Fields.Designer.cs">
+      <DependentUpon>Select Fields.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -243,6 +249,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Select Fields.resx">
+      <DependentUpon>Select Fields.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
