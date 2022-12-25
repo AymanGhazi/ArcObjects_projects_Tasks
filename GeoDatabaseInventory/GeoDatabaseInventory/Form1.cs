@@ -22,6 +22,7 @@ namespace GeoDatabaseInventory
     public partial class Inventory : Form
     {
 
+
         public Inventory()
         {
             InitializeComponent();
@@ -29,6 +30,7 @@ namespace GeoDatabaseInventory
 
         public string SelectedDSName { get; set; }
         IList<IFeatureClass> FCList = new List<IFeatureClass>();
+
         IWorkspaceFactory Pwsf = null;
         IWorkspace Pws = null;
 
@@ -43,10 +45,8 @@ namespace GeoDatabaseInventory
 
         private void btnFCLoad_Click(object sender, EventArgs e)
         {
-
             SelectedDSName = cmbFC.SelectedText;
             cmbFC.Items.Clear();
-           
 
             if (string.IsNullOrEmpty(txtGeoDatabasePath.Text))
             {
@@ -55,22 +55,28 @@ namespace GeoDatabaseInventory
             }
             else
             {
-                bool FileExists = false;
+                var FileExists = false;
 
                 if (rdbFile.Checked == true)
                 {
+                    Pwsf = new FileGDBWorkspaceFactoryClass();
+
                     FileExists = txtGeoDatabasePath.Text.EndsWith(".gdb");
                 }
-                else if (rdbPersonal.Checked == true)
+                if (rdbPersonal.Checked == true)
                 {
-                    FileExists = Path.HasExtension(txtGeoDatabasePath.Text + "/:.mdb");
+                    Pwsf = new AccessWorkspaceFactoryClass(); //mdb file access
+
+                    FileExists = txtGeoDatabasePath.Text.EndsWith(".mdb");
                 }
-                else if (rdbSHP.Checked == true)
+                if (rdbSHP.Checked == true)
                 {
+                    Pwsf = new ShapefileWorkspaceFactoryClass();
                     FileExists = Path.HasExtension(txtGeoDatabasePath.Text + "/:.shp");
+
                 }
 
-                if ((Directory.Exists(txtGeoDatabasePath.Text) || File.Exists(txtGeoDatabasePath.Text)) && FileExists)
+                if ((Directory.Exists(txtGeoDatabasePath.Text) || File.Exists(txtGeoDatabasePath.Text))&& FileExists)
                 {
                     try
                     {
@@ -92,35 +98,27 @@ namespace GeoDatabaseInventory
                             System.Windows.Forms.Application.DoEvents();
                             while (pDs != null)
                             {
-                                if (pDs is IFeatureClass)
+                                IFeatureClass FC = (IFeatureClass)pDs;
+                                string pDsName = pDs.Name;
+                                if (!FCList.Contains(FC))
                                 {
-                                    IFeatureClass FC = pDs as IFeatureClass;
-                                    string pDsName = pDs.Name;
-                                    if (!FCList.Contains(FC))
-                                    {
-                                        FCList.Add(FC);
-                                        cmbFC.Items.Insert(Index, pDs.Name);
-                                        cmbFC.DrawItem += new DrawItemEventHandler(FCList_DrawItem);
-                                        Index++;
-                                    }
-                                    pDs = PEnumDS.Next();
+                                    FCList.Add(FC);
+                                    cmbFC.Items.Insert(Index, pDs.Name);
+                                    cmbFC.DrawItem += new DrawItemEventHandler(FCList_DrawItem);
+                                    Index++;
                                 }
-
-
+                                pDs = PEnumDS.Next();
                             }
-
+                     
                             #endregion
 
                             #region Feature Datasets
                             PEnumDS = Pws.get_Datasets(esriDatasetType.esriDTFeatureDataset);
-                            pDs = PEnumDS.Next();
-                            if (pDs != null)
-                            {
-                                string DSname = pDs.Name;
+                            pDs = PEnumDS.Next();  
                                 while (pDs != null)
                                 {
-
-                                    IEnumDataset pDSInsideEnum = pDs.Subsets;
+                                string DSname = pDs.Name;
+                                IEnumDataset pDSInsideEnum = pDs.Subsets;
 
                                     IDataset pds1Inside = pDSInsideEnum.Next();
                                     while (pds1Inside != null)
@@ -128,7 +126,7 @@ namespace GeoDatabaseInventory
                                         string Name = pds1Inside.Name;
                                         if (pds1Inside is IFeatureClass)
                                         {
-                                            IFeatureClass FC = pds1Inside as IFeatureClass;
+                                            IFeatureClass FC = (IFeatureClass)pds1Inside;
                                             cmbFC.Items.Insert(Index, FC.AliasName);
                                             cmbFC.DrawItem += new DrawItemEventHandler(FCList_DrawItem);
                                             Index++;
@@ -139,24 +137,24 @@ namespace GeoDatabaseInventory
                                             pds1Inside = pDSInsideEnum.Next();
                                         }
                                     }
+
                                     pDs = PEnumDS.Next();
                                 }
                             }
-
-                            lblProgress.Text = "Feature classes Loaded ";
+                          
+                            lblProgress.Text = "Feature classes Found ";
                             System.Windows.Forms.Application.DoEvents();
 
                             cmbFC.SelectedIndex = 0;
 
                             #endregion
-                        }
+
                     }
 
                     catch (Exception ex)
                     {
                         lblProgress.Text = "Error ";
                         System.Windows.Forms.Application.DoEvents();
-
                         MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
@@ -166,61 +164,47 @@ namespace GeoDatabaseInventory
                 }
             }
         }
-
+        
         private void btnFile_Click(object sender, EventArgs e)
         {
-            IGxDialog dialog = new GxDialogClass();
-            dialog.AllowMultiSelect = false;
-            IGxObjectFilter filter = null;
-
+            IGxDialog GxDialog = new GxDialogClass();
+            GxDialog.Name = "Select Data";
+            IGxObjectFilter DialogFilter = null;
             if (rdbFile.Checked == true)
             {
                 lblProgress.Text = "File Geodatabase Selected ";
                 System.Windows.Forms.Application.DoEvents();
-
-                Pwsf = new FileGDBWorkspaceFactoryClass();
-               
-
-                dialog.Title = "Select File GeoDatabase";
-                filter = new GxFilterFileGeodatabasesClass();
-                dialog.ObjectFilter = filter;
+                GxDialog.Title = "Select File GeoDatabase";
+                DialogFilter = new GxFilterFileGeodatabasesClass();
             }
             if (rdbPersonal.Checked == true)
             {
                 lblProgress.Text = "Personal Geodatabase Selected ";
                 System.Windows.Forms.Application.DoEvents();
-                Pwsf = new AccessWorkspaceFactoryClass(); //mdb file access
-               
-                dialog.Title = "Select Personal GeoDatabase";
+                GxDialog.Title = "Select Personal GeoDatabase";
+                DialogFilter = new GxFilterPersonalGeodatabasesClass();
 
-                filter = new GxFilterPersonalGeodatabasesClass();
-                dialog.ObjectFilter = filter;
             }
             if (rdbSHP.Checked == true)
             {
-                lblProgress.Text = "Shape File Selected ";
+                lblProgress.Text = "ShapeFile Selected ";
                 System.Windows.Forms.Application.DoEvents();
-
-                Pwsf = new ShapefileWorkspaceFactoryClass();
-                dialog.Title = "Select Shape File";
-                //
-                filter = new GxFilterShapefilesClass();
-                dialog.ObjectFilter = filter;
+                GxDialog.Title = "Select ShapeFile";
+                GxDialog.ObjectFilter = new GxFilterShapefilesClass();
             }
-            IEnumGxObject selectionEnum = null;
-            if (dialog.DoModalOpen(0, out selectionEnum) == true)
+            IEnumGxObject GxObjectEnum = null;
+            if (GxDialog.DoModalOpen(0,out GxObjectEnum)==true)
             {
-             IGxObject selection = selectionEnum.Next();
-             txtGeoDatabasePath.Text = selection.FullName;
+              IGxObject selection = GxObjectEnum.Next();
+              txtGeoDatabasePath.Text = selection.FullName;
             }
-         
-
             //FolderBrowserDialog dialog = new FolderBrowserDialog();
 
             //if (dialog.ShowDialog() ==DialogResult.OK)
             //{
             //    if (!string.IsNullOrEmpty(dialog.SelectedPath))
             //    {
+
             //        txtGeoDatabasePath.Text = dialog.SelectedPath;
             //    }
             //}
@@ -279,12 +263,12 @@ namespace GeoDatabaseInventory
                     dialog.SelectedPath = dialog.SelectedPath;
                 }
             }
+
             if (!string.IsNullOrEmpty(dialog.SelectedPath))
             {
                 _Application App = new Microsoft.Office.Interop.Excel.Application();
               
                 object misValue = System.Reflection.Missing.Value;
-
                 Workbook WB = App.Workbooks.Add(XlWBATemplate.xlWBATWorksheet);
                 Worksheet WS = WB.Worksheets[1];
                 Range CellRange = WS.Range["A1:C1"];
@@ -298,6 +282,7 @@ namespace GeoDatabaseInventory
                
                 foreach (IFeatureClass item   in FCList)
                 {
+                    
                     int numberOfFClasses = item.FeatureCount(null);
                     IDataset TempDs = (IDataset)item;
 
@@ -313,6 +298,7 @@ namespace GeoDatabaseInventory
                     //    Console.WriteLine(row[column]);
                     //}
                     row += 1;
+
                 }
                 WB.SaveAs(dialog.SelectedPath);
                 WB.Close();
@@ -325,7 +311,9 @@ namespace GeoDatabaseInventory
                     Process.Start(dialog.SelectedPath);
                 }
             }
+            
         }
 
+       
     }
 }

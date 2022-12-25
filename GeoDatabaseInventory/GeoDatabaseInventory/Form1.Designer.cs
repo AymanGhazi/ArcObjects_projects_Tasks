@@ -122,7 +122,7 @@ namespace GeoDatabaseInventory
             // 
             this.btnFCLoad.Location = new System.Drawing.Point(445, 173);
             this.btnFCLoad.Name = "btnFCLoad";
-            this.btnFCLoad.Size = new System.Drawing.Size(122, 24);
+            this.btnFCLoad.Size = new System.Drawing.Size(128, 24);
             this.btnFCLoad.TabIndex = 12;
             this.btnFCLoad.Text = "Load Feature Classes";
             this.btnFCLoad.UseVisualStyleBackColor = true;
@@ -173,7 +173,7 @@ namespace GeoDatabaseInventory
             this.btnFile.ForeColor = System.Drawing.Color.Black;
             this.btnFile.Location = new System.Drawing.Point(445, 125);
             this.btnFile.Name = "btnFile";
-            this.btnFile.Size = new System.Drawing.Size(122, 23);
+            this.btnFile.Size = new System.Drawing.Size(97, 23);
             this.btnFile.TabIndex = 17;
             this.btnFile.Text = "Browse";
             this.btnFile.UseVisualStyleBackColor = true;
@@ -183,7 +183,7 @@ namespace GeoDatabaseInventory
             // 
             this.btnGenerateReport.Location = new System.Drawing.Point(445, 219);
             this.btnGenerateReport.Name = "btnGenerateReport";
-            this.btnGenerateReport.Size = new System.Drawing.Size(122, 23);
+            this.btnGenerateReport.Size = new System.Drawing.Size(112, 23);
             this.btnGenerateReport.TabIndex = 20;
             this.btnGenerateReport.Text = "Generate Report";
             this.btnGenerateReport.UseVisualStyleBackColor = true;
@@ -195,10 +195,10 @@ namespace GeoDatabaseInventory
             this.lblProgress.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lblProgress.Font = new System.Drawing.Font("Century Schoolbook", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProgress.ForeColor = System.Drawing.SystemColors.MenuText;
-            this.lblProgress.Location = new System.Drawing.Point(-1, 264);
+            this.lblProgress.Location = new System.Drawing.Point(5, 264);
             this.lblProgress.Name = "lblProgress";
             this.lblProgress.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblProgress.Size = new System.Drawing.Size(608, 16);
+            this.lblProgress.Size = new System.Drawing.Size(599, 16);
             this.lblProgress.TabIndex = 21;
             // 
             // Inventory
