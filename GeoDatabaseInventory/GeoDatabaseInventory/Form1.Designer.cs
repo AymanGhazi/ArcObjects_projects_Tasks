@@ -47,6 +47,8 @@ namespace GeoDatabaseInventory
             this.label2 = new System.Windows.Forms.Label();
             this.btnExit = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.btn_mapFile = new System.Windows.Forms.Button();
+            this.FeatureAdd = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtTitle
@@ -105,9 +107,9 @@ namespace GeoDatabaseInventory
             // 
             // txtGeoDatabasePath
             // 
-            this.txtGeoDatabasePath.Location = new System.Drawing.Point(222, 125);
+            this.txtGeoDatabasePath.Location = new System.Drawing.Point(183, 125);
             this.txtGeoDatabasePath.Name = "txtGeoDatabasePath";
-            this.txtGeoDatabasePath.Size = new System.Drawing.Size(237, 20);
+            this.txtGeoDatabasePath.Size = new System.Drawing.Size(276, 20);
             this.txtGeoDatabasePath.TabIndex = 6;
             // 
             // rdbSHP
@@ -123,9 +125,9 @@ namespace GeoDatabaseInventory
             // 
             // btnFCLoad
             // 
-            this.btnFCLoad.Location = new System.Drawing.Point(445, 173);
+            this.btnFCLoad.Location = new System.Drawing.Point(467, 168);
             this.btnFCLoad.Name = "btnFCLoad";
-            this.btnFCLoad.Size = new System.Drawing.Size(128, 24);
+            this.btnFCLoad.Size = new System.Drawing.Size(106, 41);
             this.btnFCLoad.TabIndex = 12;
             this.btnFCLoad.Text = "Load Feature Classes";
             this.btnFCLoad.UseVisualStyleBackColor = true;
@@ -133,10 +135,11 @@ namespace GeoDatabaseInventory
             // 
             // cmbFC
             // 
+            this.cmbFC.Enabled = false;
             this.cmbFC.FormattingEnabled = true;
-            this.cmbFC.Location = new System.Drawing.Point(222, 176);
+            this.cmbFC.Location = new System.Drawing.Point(183, 176);
             this.cmbFC.Name = "cmbFC";
-            this.cmbFC.Size = new System.Drawing.Size(217, 21);
+            this.cmbFC.Size = new System.Drawing.Size(276, 21);
             this.cmbFC.TabIndex = 13;
             this.cmbFC.SelectedIndexChanged += new System.EventHandler(this.cmbFC_SelectedIndexChanged);
             // 
@@ -159,6 +162,7 @@ namespace GeoDatabaseInventory
             this.lblCount.Size = new System.Drawing.Size(19, 20);
             this.lblCount.TabIndex = 16;
             this.lblCount.Text = "0";
+            this.lblCount.Click += new System.EventHandler(this.lblCount_Click);
             // 
             // btnFile
             // 
@@ -174,7 +178,7 @@ namespace GeoDatabaseInventory
             // 
             // btnGenerateReport
             // 
-            this.btnGenerateReport.Location = new System.Drawing.Point(222, 350);
+            this.btnGenerateReport.Location = new System.Drawing.Point(183, 350);
             this.btnGenerateReport.Name = "btnGenerateReport";
             this.btnGenerateReport.Size = new System.Drawing.Size(102, 23);
             this.btnGenerateReport.TabIndex = 20;
@@ -197,9 +201,9 @@ namespace GeoDatabaseInventory
             // CHLBOX
             // 
             this.CHLBOX.FormattingEnabled = true;
-            this.CHLBOX.Location = new System.Drawing.Point(222, 217);
+            this.CHLBOX.Location = new System.Drawing.Point(183, 217);
             this.CHLBOX.Name = "CHLBOX";
-            this.CHLBOX.Size = new System.Drawing.Size(237, 109);
+            this.CHLBOX.Size = new System.Drawing.Size(276, 109);
             this.CHLBOX.TabIndex = 22;
             // 
             // label2
@@ -215,9 +219,9 @@ namespace GeoDatabaseInventory
             // btnExit
             // 
             this.btnExit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnExit.Location = new System.Drawing.Point(363, 350);
+            this.btnExit.Location = new System.Drawing.Point(395, 350);
             this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(96, 23);
+            this.btnExit.Size = new System.Drawing.Size(64, 23);
             this.btnExit.TabIndex = 24;
             this.btnExit.Text = "Exit";
             this.btnExit.UseVisualStyleBackColor = true;
@@ -233,6 +237,29 @@ namespace GeoDatabaseInventory
             this.label1.TabIndex = 25;
             this.label1.Text = "Features";
             // 
+            // btn_mapFile
+            // 
+            this.btn_mapFile.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btn_mapFile.Location = new System.Drawing.Point(304, 350);
+            this.btn_mapFile.Name = "btn_mapFile";
+            this.btn_mapFile.Size = new System.Drawing.Size(64, 23);
+            this.btn_mapFile.TabIndex = 26;
+            this.btn_mapFile.Text = "map File";
+            this.btn_mapFile.UseVisualStyleBackColor = true;
+            this.btn_mapFile.Click += new System.EventHandler(this.btn_mapFile_Click);
+            // 
+            // FeatureAdd
+            // 
+            this.FeatureAdd.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.FeatureAdd.ForeColor = System.Drawing.Color.Black;
+            this.FeatureAdd.Location = new System.Drawing.Point(467, 284);
+            this.FeatureAdd.Name = "FeatureAdd";
+            this.FeatureAdd.Size = new System.Drawing.Size(106, 42);
+            this.FeatureAdd.TabIndex = 27;
+            this.FeatureAdd.Text = "Add Feature To Report";
+            this.FeatureAdd.UseVisualStyleBackColor = true;
+            this.FeatureAdd.Click += new System.EventHandler(this.FeatureAdd_Click);
+            // 
             // InventoryMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -240,6 +267,8 @@ namespace GeoDatabaseInventory
             this.BackColor = System.Drawing.Color.Linen;
             this.CancelButton = this.btnExit;
             this.ClientSize = new System.Drawing.Size(583, 405);
+            this.Controls.Add(this.FeatureAdd);
+            this.Controls.Add(this.btn_mapFile);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.label2);
@@ -287,6 +316,8 @@ namespace GeoDatabaseInventory
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btn_mapFile;
+        private System.Windows.Forms.Button FeatureAdd;
     }
 }
 

@@ -35,11 +35,21 @@ namespace GeoDatabaseInventory
     //        base.OnDrawItem(e);
     //    }
     //} 
-    public sealed class FieldsList
+    public  class FieldsList
     {
-        public IFeatureClass FeatureClassID { get; set; }
+        public IFeatureClass FeatureClass { get; set; }
 
         public List<IField> fieldsSelected { get; set; }
+
+    }
+    public  class MappingInfo
+    {
+        public string  FeatureClass { get; set; }
+        public string Condition { get; set; }
+        public string Field { get; set; }
+        public string Field_type { get; set; }
+        public string value { get; set; }
+
 
     }
 
